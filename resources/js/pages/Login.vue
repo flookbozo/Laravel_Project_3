@@ -150,6 +150,7 @@ export default {
           .post("auth/user/login", data)
           .then((response) => {
             this.app.user = response.data;
+            localStorage.setItem('User', 'User');
             this.$router.push("/");
           })
           .catch((error) => {
@@ -178,6 +179,7 @@ export default {
           .post("auth/hospital/login", data)
           .then((response) => {
             this.app.hospital = response.data;
+            localStorage.setItem('User', 'Hospital');
             this.$router.push("/");
           })
           .catch((error) => {

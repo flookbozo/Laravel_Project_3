@@ -15,6 +15,8 @@ class Hospital extends Authenticatable
         'name',
         'username',
         'password',
+        'hospitalname',
+        'email',
     ];
 
     protected $hidden = [

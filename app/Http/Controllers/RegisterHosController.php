@@ -28,6 +28,8 @@ class RegisterHosController extends Controller
         $user->name = $request->name;
         $user->username = $request->username;
         $user->password = bcrypt($request->password);
+        $user->hospitalname = $request->hospitalname;
+        $user->email = $request->email;
         $user->save();
     }
 
@@ -44,6 +46,6 @@ class RegisterHosController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('hospitals')->logout();
     }
 }

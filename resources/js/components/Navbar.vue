@@ -63,6 +63,11 @@ export default {
                 this.app.hospital = null;
                 this.$router.push("/login");
             });
+            this.app.req.post("auth/hospital/logout").then(() => {
+                this.app.user = null;
+                this.app.hospital = null;
+                this.$router.push("/login");
+            });
         }
     }
 };

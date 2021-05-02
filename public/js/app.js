@@ -1874,8 +1874,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.initUser();
-    this.initHospital();
+    if (localStorage.getItem('User') == "User") {
+      this.initUser();
+    } else {
+      this.initHospital();
+    }
   },
   methods: {
     initUser: function initUser() {
@@ -1893,7 +1896,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       this.req.get('auth/hospital/init').then(function (response) {
-        _this2.hospital = response.data.hospital;
+        _this2.user = response.data.hospital;
         _this2.loading = false;
         _this2.initiated = true;
       });
@@ -1973,6 +1976,12 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.app.req.post("auth/logout").then(function () {
+        _this.app.user = null;
+        _this.app.hospital = null;
+
+        _this.$router.push("/login");
+      });
+      this.app.req.post("auth/hospital/logout").then(function () {
         _this.app.user = null;
         _this.app.hospital = null;
 
@@ -2166,6 +2175,7 @@ __webpack_require__.r(__webpack_exports__);
         };
         this.app.req.post("auth/user/login", data).then(function (response) {
           _this.app.user = response.data;
+          localStorage.setItem('User', 'User');
 
           _this.$router.push("/");
         })["catch"](function (error) {
@@ -2193,6 +2203,7 @@ __webpack_require__.r(__webpack_exports__);
         };
         this.app.req.post("auth/hospital/login", data).then(function (response) {
           _this2.app.hospital = response.data;
+          localStorage.setItem('User', 'Hospital');
 
           _this2.$router.push("/");
         })["catch"](function (error) {
@@ -2373,96 +2384,168 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "register",
   props: ["app"],
   data: function data() {
     return {
-      name: "",
-      username: "",
-      password: "",
-      passwordAgain: "",
-      errors: []
+      user: {
+        name: "",
+        lastname: "",
+        username: "",
+        password: "",
+        passwordAgain: "",
+        user_tel: "",
+        errors: []
+      },
+      hospital: {
+        name: "",
+        username: "",
+        password: "",
+        hospitalname: "",
+        email: "",
+        errors: []
+      }
     };
   },
   methods: {
     onSubmitUser: function onSubmitUser() {
       var _this = this;
 
-      this.errors = [];
+      this.user.errors = [];
 
-      if (!this.name) {
-        this.errors.push("Name is required.");
+      if (!this.user.name) {
+        this.user.errors.push("Name is required.");
       }
 
-      if (!this.username) {
-        this.errors.push("Username is required.");
+      if (!this.user.lastname) {
+        this.user.errors.push("Lastname is required.");
       }
 
-      if (!this.password) {
-        this.errors.push("Password is required.");
+      if (!this.user.username) {
+        this.user.errors.push("Username is required.");
       }
 
-      if (!this.passwordAgain) {
-        this.errors.push("Password confirmation is required.");
+      if (!this.user.password) {
+        this.user.errors.push("Password is required.");
       }
 
-      if (this.password !== this.passwordAgain) {
-        this.errors.push("Passwords dont match");
+      if (!this.user.passwordAgain) {
+        this.user.errors.push("Password confirmation is required.");
       }
 
-      if (!this.errors.length) {
+      if (this.user.password !== this.user.passwordAgain) {
+        this.user.errors.push("Passwords dont match");
+      }
+
+      if (!this.user.user_tel) {
+        this.user.errors.push("Tel. is required.");
+      }
+
+      if (!this.user.errors.length) {
         var data = {
-          name: this.name,
-          username: this.username,
-          password: this.password
+          name: this.user.name,
+          lastname: this.user.lastname,
+          username: this.user.username,
+          password: this.user.password,
+          user_tel: this.user.user_tel
         };
-        this.app.req.post("auth/user/register", data).then(function (response) {
-          _this.app.user = response.data;
+        this.app.req.post("auth/user/register", this.user).then(function (response) {
+          _this.app.user = response.data.user;
 
           _this.$router.push("/");
         })["catch"](function (error) {
-          _this.errors.push(error.response.data.error);
+          _this.user.errors.push(error.response.data.error);
         });
       }
     },
     onSubmitHospital: function onSubmitHospital() {
       var _this2 = this;
 
-      this.errors = [];
+      this.hospital.errors = [];
 
-      if (!this.name) {
-        this.errors.push("Name is required.");
+      if (!this.hospital.name) {
+        this.hospital.errors.push("Name is required.");
       }
 
-      if (!this.username) {
-        this.errors.push("Username is required.");
+      if (!this.hospital.username) {
+        this.hospital.errors.push("Username is required.");
       }
 
-      if (!this.password) {
-        this.errors.push("Password is required.");
+      if (!this.hospital.password) {
+        this.hospital.errors.push("Password is required.");
       }
 
-      if (!this.passwordAgain) {
-        this.errors.push("Password confirmation is required.");
+      if (!this.hospital.passwordAgain) {
+        this.hospital.errors.push("Password confirmation is required.");
       }
 
-      if (this.password !== this.passwordAgain) {
-        this.errors.push("Passwords dont match");
+      if (this.hospital.password !== this.hospital.passwordAgain) {
+        this.hospital.errors.push("Passwords dont match");
       }
 
-      if (!this.errors.length) {
+      if (!this.hospital.hospitalname) {
+        this.hospital.errors.push("Hospital Name is required.");
+      }
+
+      if (!this.hospital.email) {
+        this.hospital.errors.push("Email is required.");
+      }
+
+      if (!this.hospital.errors.length) {
         var data = {
-          name: this.name,
-          username: this.username,
-          password: this.password
+          name: this.hospital.name,
+          username: this.hospital.username,
+          password: this.hospital.password,
+          hospitalname: this.hospital.hospitalname,
+          email: this.hospital.email
         };
-        this.app.req.post("auth/hospital/register", data).then(function (response) {
-          _this2.app.hospital = response.data;
+        this.app.req.post("auth/hospital/register", this.hospital).then(function (response) {
+          _this2.app.hospital = response.data.hospital;
 
           _this2.$router.push("/");
         })["catch"](function (error) {
-          _this2.errors.push(error.response.data.error);
+          _this2.hospital.errors.push(error.response.data.error);
         });
       }
     }
@@ -38894,12 +38977,15 @@ var render = function() {
                       }
                     },
                     [
-                      _vm.errors.length
+                      _vm.hospital.errors.length
                         ? _c("div", { staticClass: "alert alert-danger" }, [
                             _c(
                               "ul",
                               { staticClass: "mb-0" },
-                              _vm._l(_vm.errors, function(error, index) {
+                              _vm._l(_vm.hospital.errors, function(
+                                error,
+                                index
+                              ) {
                                 return _c("li", { key: index }, [
                                   _vm._v(
                                     "\n                    " +
@@ -38921,19 +39007,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.name,
-                              expression: "name"
+                              value: _vm.hospital.name,
+                              expression: "hospital.name"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", placeholder: "Name" },
-                          domProps: { value: _vm.name },
+                          domProps: { value: _vm.hospital.name },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.name = $event.target.value
+                              _vm.$set(
+                                _vm.hospital,
+                                "name",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -38947,19 +39037,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.username,
-                              expression: "username"
+                              value: _vm.hospital.username,
+                              expression: "hospital.username"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", placeholder: "Username" },
-                          domProps: { value: _vm.username },
+                          domProps: { value: _vm.hospital.username },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.username = $event.target.value
+                              _vm.$set(
+                                _vm.hospital,
+                                "username",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -38973,19 +39067,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.password,
-                              expression: "password"
+                              value: _vm.hospital.password,
+                              expression: "hospital.password"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "password", placeholder: "Password" },
-                          domProps: { value: _vm.password },
+                          domProps: { value: _vm.hospital.password },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.password = $event.target.value
+                              _vm.$set(
+                                _vm.hospital,
+                                "password",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -38999,8 +39097,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.passwordAgain,
-                              expression: "passwordAgain"
+                              value: _vm.hospital.passwordAgain,
+                              expression: "hospital.passwordAgain"
                             }
                           ],
                           staticClass: "form-control",
@@ -39008,13 +39106,77 @@ var render = function() {
                             type: "password",
                             placeholder: "Password Again"
                           },
-                          domProps: { value: _vm.passwordAgain },
+                          domProps: { value: _vm.hospital.passwordAgain },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.passwordAgain = $event.target.value
+                              _vm.$set(
+                                _vm.hospital,
+                                "passwordAgain",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("Hospital Name")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.hospital.hospitalname,
+                              expression: "hospital.hospitalname"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Hospital Name" },
+                          domProps: { value: _vm.hospital.hospitalname },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.hospital,
+                                "hospitalname",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("Email")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.hospital.email,
+                              expression: "hospital.email"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Email" },
+                          domProps: { value: _vm.hospital.email },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.hospital,
+                                "email",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -39058,12 +39220,12 @@ var render = function() {
                       }
                     },
                     [
-                      _vm.errors.length
+                      _vm.user.errors.length
                         ? _c("div", { staticClass: "alert alert-danger" }, [
                             _c(
                               "ul",
                               { staticClass: "mb-0" },
-                              _vm._l(_vm.errors, function(error, index) {
+                              _vm._l(_vm.user.errors, function(error, index) {
                                 return _c("li", { key: index }, [
                                   _vm._v(
                                     "\n                    " +
@@ -39085,19 +39247,49 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.name,
-                              expression: "name"
+                              value: _vm.user.name,
+                              expression: "user.name"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", placeholder: "Name" },
-                          domProps: { value: _vm.name },
+                          domProps: { value: _vm.user.name },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.name = $event.target.value
+                              _vm.$set(_vm.user, "name", $event.target.value)
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("LastName")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.user.lastname,
+                              expression: "user.lastname"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Name" },
+                          domProps: { value: _vm.user.lastname },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.user,
+                                "lastname",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -39111,19 +39303,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.username,
-                              expression: "username"
+                              value: _vm.user.username,
+                              expression: "user.username"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", placeholder: "Username" },
-                          domProps: { value: _vm.username },
+                          domProps: { value: _vm.user.username },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.username = $event.target.value
+                              _vm.$set(
+                                _vm.user,
+                                "username",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -39137,19 +39333,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.password,
-                              expression: "password"
+                              value: _vm.user.password,
+                              expression: "user.password"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "password", placeholder: "Password" },
-                          domProps: { value: _vm.password },
+                          domProps: { value: _vm.user.password },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.password = $event.target.value
+                              _vm.$set(
+                                _vm.user,
+                                "password",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -39163,8 +39363,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.passwordAgain,
-                              expression: "passwordAgain"
+                              value: _vm.user.passwordAgain,
+                              expression: "user.passwordAgain"
                             }
                           ],
                           staticClass: "form-control",
@@ -39172,13 +39372,47 @@ var render = function() {
                             type: "password",
                             placeholder: "Password Again"
                           },
-                          domProps: { value: _vm.passwordAgain },
+                          domProps: { value: _vm.user.passwordAgain },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.passwordAgain = $event.target.value
+                              _vm.$set(
+                                _vm.user,
+                                "passwordAgain",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("Tel.")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.user.user_tel,
+                              expression: "user.user_tel"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Tel." },
+                          domProps: { value: _vm.user.user_tel },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.user,
+                                "user_tel",
+                                $event.target.value
+                              )
                             }
                           }
                         })

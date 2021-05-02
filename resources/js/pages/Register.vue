@@ -34,9 +34,9 @@
           <div class="card-body">
             <div class="col-md-6 offset-md-3">
               <form v-on:submit.prevent="onSubmitHospital">
-                <div class="alert alert-danger" v-if="errors.length">
+                <div class="alert alert-danger" v-if="hospital.errors.length">
                   <ul class="mb-0">
-                    <li v-for="(error, index) in errors" :key="index">
+                    <li v-for="(error, index) in hospital.errors" :key="index">
                       {{ error }}
                     </li>
                   </ul>
@@ -47,7 +47,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Name"
-                    v-model="name"
+                    v-model="hospital.name"
                   />
                 </div>
 
@@ -57,7 +57,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Username"
-                    v-model="username"
+                    v-model="hospital.username"
                   />
                 </div>
 
@@ -67,7 +67,7 @@
                     type="password"
                     class="form-control"
                     placeholder="Password"
-                    v-model="password"
+                    v-model="hospital.password"
                   />
                 </div>
 
@@ -77,7 +77,27 @@
                     type="password"
                     class="form-control"
                     placeholder="Password Again"
-                    v-model="passwordAgain"
+                    v-model="hospital.passwordAgain"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Hospital Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Hospital Name"
+                    v-model="hospital.hospitalname"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Email</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Email"
+                    v-model="hospital.email"
                   />
                 </div>
 
@@ -98,9 +118,9 @@
           <div class="card-body">
             <div class="col-md-6 offset-md-3">
               <form v-on:submit.prevent="onSubmitUser">
-                <div class="alert alert-danger" v-if="errors.length">
+                <div class="alert alert-danger" v-if="user.errors.length">
                   <ul class="mb-0">
-                    <li v-for="(error, index) in errors" :key="index">
+                    <li v-for="(error, index) in user.errors" :key="index">
                       {{ error }}
                     </li>
                   </ul>
@@ -111,7 +131,17 @@
                     type="text"
                     class="form-control"
                     placeholder="Name"
-                    v-model="name"
+                    v-model="user.name"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>LastName</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Name"
+                    v-model="user.lastname"
                   />
                 </div>
 
@@ -121,7 +151,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Username"
-                    v-model="username"
+                    v-model="user.username"
                   />
                 </div>
 
@@ -131,7 +161,7 @@
                     type="password"
                     class="form-control"
                     placeholder="Password"
-                    v-model="password"
+                    v-model="user.password"
                   />
                 </div>
 
@@ -141,7 +171,17 @@
                     type="password"
                     class="form-control"
                     placeholder="Password Again"
-                    v-model="passwordAgain"
+                    v-model="user.passwordAgain"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Tel.</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Tel."
+                    v-model="user.user_tel"
                   />
                 </div>
 
@@ -161,83 +201,112 @@ export default {
   props: ["app"],
   data() {
     return {
-      name: "",
-      username: "",
-      password: "",
-      passwordAgain: "",
-      errors: [],
+      user: {
+        name: "",
+        lastname: "",
+        username: "",
+        password: "",
+        passwordAgain: "",
+        user_tel: "",
+        errors: [],
+      },
+      hospital: {
+        name: "",
+        username: "",
+        password: "",
+        hospitalname: "",
+        email: "",
+        errors: [],
+      }
+      
     };
   },
   methods: {
     onSubmitUser() {
-      this.errors = [];
+      this.user.errors = [];
 
-      if (!this.name) {
-        this.errors.push("Name is required.");
+      if (!this.user.name) {
+        this.user.errors.push("Name is required.");
       }
-      if (!this.username) {
-        this.errors.push("Username is required.");
+      if (!this.user.lastname) {
+        this.user.errors.push("Lastname is required.");
       }
-      if (!this.password) {
-        this.errors.push("Password is required.");
+      if (!this.user.username) {
+        this.user.errors.push("Username is required.");
       }
-      if (!this.passwordAgain) {
-        this.errors.push("Password confirmation is required.");
+      if (!this.user.password) {
+        this.user.errors.push("Password is required.");
       }
-      if (this.password !== this.passwordAgain) {
-        this.errors.push("Passwords dont match");
+      if (!this.user.passwordAgain) {
+        this.user.errors.push("Password confirmation is required.");
       }
-      if (!this.errors.length) {
+      if (this.user.password !== this.user.passwordAgain) {
+        this.user.errors.push("Passwords dont match");
+      }
+      if (!this.user.user_tel) {
+        this.user.errors.push("Tel. is required.");
+      }
+      if (!this.user.errors.length) {
         const data = {
-          name: this.name,
-          username: this.username,
-          password: this.password,
+          name: this.user.name,
+          lastname: this.user.lastname,
+          username: this.user.username,
+          password: this.user.password,
+          user_tel: this.user.user_tel,
         };
 
         this.app.req
-          .post("auth/user/register", data)
+          .post("auth/user/register", this.user)
           .then((response) => {
-            this.app.user = response.data;
+            this.app.user = response.data.user;
             this.$router.push("/");
           })
           .catch((error) => {
-            this.errors.push(error.response.data.error);
+            this.user.errors.push(error.response.data.error);
           });
       }
     },
     onSubmitHospital() {
-      this.errors = [];
+      this.hospital.errors = [];
 
-      if (!this.name) {
-        this.errors.push("Name is required.");
+      if (!this.hospital.name) {
+        this.hospital.errors.push("Name is required.");
       }
-      if (!this.username) {
-        this.errors.push("Username is required.");
+      if (!this.hospital.username) {
+        this.hospital.errors.push("Username is required.");
       }
-      if (!this.password) {
-        this.errors.push("Password is required.");
+      if (!this.hospital.password) {
+        this.hospital.errors.push("Password is required.");
       }
-      if (!this.passwordAgain) {
-        this.errors.push("Password confirmation is required.");
+      if (!this.hospital.passwordAgain) {
+        this.hospital.errors.push("Password confirmation is required.");
       }
-      if (this.password !== this.passwordAgain) {
-        this.errors.push("Passwords dont match");
+      if (this.hospital.password !== this.hospital.passwordAgain) {
+        this.hospital.errors.push("Passwords dont match");
       }
-      if (!this.errors.length) {
+      if (!this.hospital.hospitalname) {
+        this.hospital.errors.push("Hospital Name is required.");
+      }
+      if (!this.hospital.email) {
+        this.hospital.errors.push("Email is required.");
+      }
+      if (!this.hospital.errors.length) {
         const data = {
-          name: this.name,
-          username: this.username,
-          password: this.password,
+          name: this.hospital.name,
+          username: this.hospital.username,
+          password: this.hospital.password,
+          hospitalname: this.hospital.hospitalname,
+          email: this.hospital.email,
         };
 
         this.app.req
-          .post("auth/hospital/register", data)
+          .post("auth/hospital/register", this.hospital)
           .then((response) => {
-            this.app.hospital = response.data;
+            this.app.hospital = response.data.hospital;
             this.$router.push("/");
           })
           .catch((error) => {
-            this.errors.push(error.response.data.error);
+            this.hospital.errors.push(error.response.data.error);
           });
       }
     },

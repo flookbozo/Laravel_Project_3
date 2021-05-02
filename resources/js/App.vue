@@ -27,8 +27,12 @@ export default {
         }
     },
     mounted(){
-        this.initUser();
-        this.initHospital();
+        if(localStorage.getItem('User') == "User") {
+            this.initUser();
+        }
+        else{
+            this.initHospital();
+        }
     },
     methods: {
         initUser()
@@ -46,7 +50,7 @@ export default {
             this.loading = true;
 
             this.req.get('auth/hospital/init').then(response => {
-                this.hospital = response.data.hospital;
+                this.user = response.data.hospital;
                 this.loading = false;
                 this.initiated = true;
             })
